@@ -11,10 +11,11 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import io.th0rgal.oraxen.api.events.furniture.OraxenFurniturePlaceEvent;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 @Name("On Custom Furniture Place")
@@ -38,18 +39,24 @@ public class EvtFurniturePlaceEvent extends SkriptEvent {
                 return arg.getItemInHand();
             }
         }, 0);
+
+        EventValues.registerEventValue(OraxenFurniturePlaceEvent.class, Block.class, new Getter<Block, OraxenFurniturePlaceEvent>() {
+            @Override
+            public Block get(OraxenFurniturePlaceEvent arg) {
+                return arg.getBlock();
+            }
+        }, 0);
     }
 
     @Override
-    public boolean init(Literal<?>[] args, int matchedPattern, SkriptParser.ParseResult parseResult) {
+    public boolean init(Literal<?>[] args, int matchedPattern, SkriptParser.@NotNull ParseResult parseResult) {
         furnitureID = (Literal<String>) args[0];
         return true;
     }
 
     @Override
-    public boolean check(Event e) {
-        if (e instanceof OraxenFurniturePlaceEvent) {
-            OraxenFurniturePlaceEvent event = (OraxenFurniturePlaceEvent) e;
+    public boolean check(@NotNull Event e) {
+        if (e instanceof OraxenFurniturePlaceEvent event) {
             if (furnitureID == null) {
                 return !event.isCancelled();
             } else {
@@ -63,7 +70,7 @@ public class EvtFurniturePlaceEvent extends SkriptEvent {
     }
 
     @Override
-    public String toString(@Nullable Event e, boolean debug) {
+    public @NotNull String toString(@Nullable Event e, boolean debug) {
         return "custom furniture " + (furnitureID != null ? furnitureID.toString(e, debug) : "");
     }
 }

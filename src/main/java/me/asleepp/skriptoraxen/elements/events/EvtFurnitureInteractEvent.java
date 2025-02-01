@@ -11,7 +11,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import io.th0rgal.oraxen.api.events.furniture.OraxenFurnitureInteractEvent;
-import io.th0rgal.oraxen.api.events.furniture.OraxenFurnitureInteractEvent;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
@@ -38,6 +38,12 @@ public class EvtFurnitureInteractEvent extends SkriptEvent {
                 return arg.getItemInHand();
             }
         }, 0);
+        EventValues.registerEventValue(OraxenFurnitureInteractEvent.class, Block.class, new Getter<Block, OraxenFurnitureInteractEvent>() {
+            @Override
+            public Block get(OraxenFurnitureInteractEvent arg) {
+                return arg.getBlock();
+            }
+        }, 0);
     }
 
     @Override
@@ -48,8 +54,7 @@ public class EvtFurnitureInteractEvent extends SkriptEvent {
 
     @Override
     public boolean check(Event e) {
-        if (e instanceof OraxenFurnitureInteractEvent) {
-            OraxenFurnitureInteractEvent event = (OraxenFurnitureInteractEvent) e;
+        if (e instanceof OraxenFurnitureInteractEvent event) {
             if (furnitureID == null) {
                 return !event.isCancelled();
             } else {

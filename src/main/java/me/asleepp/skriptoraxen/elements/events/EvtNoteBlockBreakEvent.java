@@ -10,13 +10,11 @@ import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
-import io.th0rgal.oraxen.api.events.furniture.OraxenFurnitureDamageEvent;
 import io.th0rgal.oraxen.api.events.noteblock.OraxenNoteBlockBreakEvent;
-import io.th0rgal.oraxen.api.events.stringblock.OraxenStringBlockBreakEvent;
-import io.th0rgal.oraxen.api.events.stringblock.OraxenStringBlockPlaceEvent;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 @Name("On Custom Note Block Break")
@@ -44,15 +42,14 @@ public class EvtNoteBlockBreakEvent extends SkriptEvent {
     }
 
     @Override
-    public boolean init(Literal<?>[] args, int matchedPattern, SkriptParser.ParseResult parseResult) {
+    public boolean init(Literal<?>[] args, int matchedPattern, SkriptParser.@NotNull ParseResult parseResult) {
         noteBlockID = (Literal<String>) args[0];
         return true;
     }
 
     @Override
-    public boolean check(Event e) {
-        if (e instanceof OraxenNoteBlockBreakEvent) {
-            OraxenNoteBlockBreakEvent event = (OraxenNoteBlockBreakEvent) e;
+    public boolean check(@NotNull Event e) {
+        if (e instanceof OraxenNoteBlockBreakEvent event) {
             if (noteBlockID == null) {
                 return !event.isCancelled();
             } else {
@@ -67,7 +64,7 @@ public class EvtNoteBlockBreakEvent extends SkriptEvent {
 
 
     @Override
-    public String toString(@Nullable Event e, boolean debug) {
+    public @NotNull String toString(@Nullable Event e, boolean debug) {
         return "custom note block break" + (noteBlockID != null ? noteBlockID.toString(e, debug) : "");
     }
 }
