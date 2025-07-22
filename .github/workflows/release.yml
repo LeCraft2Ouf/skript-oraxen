@@ -3,7 +3,7 @@ name: Build & Release Skript-Oraxen
 on:
   push:
     tags:
-      - 'v*' # Ex : v1.0, v1.1.2 => déclenche le workflow
+      - 'v*' # Déclenche le workflow sur un tag commençant par "v"
 
 jobs:
   build:
@@ -25,10 +25,15 @@ jobs:
       - name: Build plugin with ShadowJar
         run: ./gradlew shadowJar
 
+      - name: Rename JAR with version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          mkdir output
+          cp build/libs/*-all.jar output/skript-oraxen-${VERSION}.jar
+
       - name: Upload JAR to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            build/libs/skript-oraxen-*-all.jar
+          files: output/skript-oraxen-*.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
