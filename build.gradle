@@ -59,7 +59,7 @@ processResources {
 }
 
 shadowJar {
-    archiveClassifier.set('') // remplace -all.jar par .jar
+    archiveClassifier.set('all') // remplace -all.jar par .jar
     archiveVersion.set(project.version)
     minimize()
 

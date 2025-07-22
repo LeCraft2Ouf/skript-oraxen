@@ -29,11 +29,14 @@ jobs:
         run: |
           VERSION=${GITHUB_REF#refs/tags/}
           mkdir -p output
+          echo "Searching for JAR in build/libs..."
+          ls -l build/libs || true
           JAR_PATH=$(find build/libs -type f -name '*-all.jar' | head -n 1)
           if [ -z "$JAR_PATH" ]; then
             echo "❌ Aucun fichier -all.jar trouvé dans build/libs"
             exit 1
           fi
+          echo "✅ Fichier trouvé : $JAR_PATH"
           cp "$JAR_PATH" "output/skript-oraxen-${VERSION}.jar"
 
       - name: Upload JAR to GitHub Release
