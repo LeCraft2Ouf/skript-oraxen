@@ -3,7 +3,7 @@ package me.asleepp.skriptoraxen;
 import java.io.IOException;
 
 
-import ch.njol.skript.bstats.bukkit.Metrics;
+import org.bstats.bukkit.Metrics;
 import ch.njol.skript.util.Version;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
