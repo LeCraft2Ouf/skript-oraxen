@@ -28,9 +28,14 @@ jobs:
       - name: Rename JAR with version
         run: |
           VERSION=${GITHUB_REF#refs/tags/}
-          mkdir output
-          JAR_PATH=$(find build/libs -name '*-all.jar' | head -n 1)
+          mkdir -p output
+          JAR_PATH=$(find build/libs -type f -name '*-all.jar' | head -n 1)
+          if [ -z "$JAR_PATH" ]; then
+            echo "❌ Aucun fichier -all.jar trouvé dans build/libs"
+            exit 1
+          fi
           cp "$JAR_PATH" "output/skript-oraxen-${VERSION}.jar"
+
       - name: Upload JAR to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
