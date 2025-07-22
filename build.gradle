@@ -9,35 +9,33 @@ plugins {
 group = 'me.Asleepp'
 version = '1.0'
 
-def targetJavaVersion = 17
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
 
 java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    }
-}
-
-configurations {
-    shadow
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
 
 repositories {
     mavenCentral()
+
     maven {
         name = "papermc-repo"
         url = "https://repo.papermc.io/repository/maven-public/"
     }
+
     maven {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/groups/public/"
     }
+
     maven {
         name = "Skript"
         url = 'https://repo.skriptlang.org/releases'
     }
+
     maven {
         name = "Oraxen"
         url = "https://repo.oraxen.com/releases"
@@ -47,21 +45,13 @@ repositories {
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
 
-    shadow 'org.bstats:bstats-bukkit:3.0.2'
+    implementation 'org.bstats:bstats-bukkit:3.0.2'
 
-    compileOnly("com.github.SkriptLang:Skript:2.7.1") {
+    compileOnly('com.github.SkriptLang:Skript:2.7.1') {
         transitive = false
     }
 
     compileOnly 'io.th0rgal:oraxen:1.170.0'
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        options.release.set(targetJavaVersion)
-    }
-    options.compilerArgs.addAll(['-Xlint:unchecked', '-Xlint:deprecation'])
 }
 
 processResources {
@@ -69,16 +59,22 @@ processResources {
 }
 
 shadowJar {
+    archiveClassifier.set('') // remplace -all.jar par .jar
+    archiveVersion.set(project.version)
+    minimize()
+
     dependencies {
         include(dependency('org.bstats:bstats-bukkit'))
         include(dependency('org.bstats:bstats-base'))
     }
+
     relocate 'org.bstats', 'me.asleepp.skriptoraxen.bstats'
-    configurations = [project.configurations.shadow]
-    archiveVersion = project.version
-    minimize()
 }
 
-build {
-    dependsOn(shadowJar)
+tasks.build {
+    dependsOn shadowJar
+}
+
+tasks.jar {
+    enabled = false
 }
